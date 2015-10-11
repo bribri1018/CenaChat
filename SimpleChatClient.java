@@ -12,6 +12,7 @@ public class SimpleChatClient {
 	BufferedReader reader;
 	PrintWriter writer;
 	Socket sock;
+	SoundPlayer soundplayer = new SoundPlayer();
 
 	public static void main(String[] args) {
 		SimpleChatClient client = new SimpleChatClient();
@@ -21,7 +22,7 @@ public class SimpleChatClient {
 	public void go() {
 		JFrame frame = new JFrame("Ludicrously Simple Chat Client");
 		JPanel mainPanel = new JPanel();
-		incoming = new JTextArea(15, 50);
+		incoming = new JTextArea(30, 100);
 		incoming.setLineWrap(true);
 		incoming.setWrapStyleWord(true);
 		incoming.setEditable(false);
@@ -68,6 +69,8 @@ public class SimpleChatClient {
 			}
 			outgoing.setText("");
 			outgoing.requestFocus();
+			soundplayer.play(new File("send.wav"));
+
 		}
 
 	}
@@ -76,7 +79,7 @@ public class SimpleChatClient {
 		public void run() {
 			String message;
 			try {
-				while ((message= reader.readLine()) != null) {
+				while ((message = reader.readLine()) != null) {
 					System.out.println("read " + message);
 					incoming.append(message + "\n");
 				}
