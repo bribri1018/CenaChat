@@ -1,7 +1,9 @@
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
 import javax.swing.*;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -44,6 +47,10 @@ public class SimpleChatClient extends Application{
 	    textArea.setPrefRowCount(30);
 	    textArea.setWrapText(true);
 	    textArea.setEditable(false);
+	    
+	    final TextField name = new TextField();
+	    Label nameLabel = new Label("Name: ");
+	      
 	
         final TextField message = new TextField();
         message.setMinWidth(300);
@@ -61,7 +68,7 @@ public class SimpleChatClient extends Application{
 	        	if (message.getText() != null && !message.getText().isEmpty()) {
 	        		
 	        		try {
-	    				writer.println(message.getText());
+	    				writer.println(name.getText() + ">>> " + message.getText());
 	    				writer.flush();
 	    			} catch (Exception ex) {
 	    				ex.printStackTrace();
@@ -73,6 +80,8 @@ public class SimpleChatClient extends Application{
 	        }
         });
         
+        grid.add(nameLabel, 0, 24);
+        grid.add(name, 0, 25);
         grid.add(hb, 0, 30);
         grid.add(btn, 1, 30);
         grid.add(textArea, 0, 0, 20, 20);
@@ -91,7 +100,8 @@ public class SimpleChatClient extends Application{
 				}
 			}
 		});
-
+		
+	
 		readerThread.start();
         
         grid.setId("pane");
