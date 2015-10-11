@@ -1,11 +1,6 @@
 import java.io.*;
 import java.net.*;
-import java.util.*;
-
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,12 +8,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -44,7 +36,7 @@ public class SimpleChatClient extends Application{
 	    grid.setVgap(10);
 	    grid.setPadding(new Insets(25, 25, 25, 25));
 	    
-	    TextArea textArea = new TextArea();
+	    final TextArea textArea = new TextArea();
 	    textArea.setPrefColumnCount(20);
 	    textArea.setPrefRowCount(30);
 	    textArea.setWrapText(true);
@@ -83,7 +75,19 @@ public class SimpleChatClient extends Application{
         grid.add(textArea, 0, 0, 20, 20);
         
         setUpNetworking();
-		Thread readerThread = new Thread(new IncomingReader());
+		Thread readerThread = new Thread(new Runnable() {
+			public void run(){
+				String message;
+				try {
+					while ((message= reader.readLine()) != null) {
+						System.out.println("read " + message);
+						textArea.appendText(message + "\n");
+					}
+				} catch(Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
 		readerThread.start();
         
         primaryStage.setScene(new Scene(grid, 600, 500));
@@ -95,32 +99,6 @@ public class SimpleChatClient extends Application{
 		launch(args);
 	}
 
-	public void go() {
-		JFrame frame = new JFrame("CENA CHAT");
-		JPanel mainPanel = new JPanel();
-		incoming = new JTextArea(15, 50);
-		incoming.setLineWrap(true);
-		incoming.setWrapStyleWord(true);
-		incoming.setEditable(false);
-		JScrollPane qScroller = new JScrollPane(incoming);
-		qScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		qScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-		outgoing = new JTextField(20);
-		JButton sendButton = new JButton("Send");
-		sendButton.addActionListener(new SendButtonListener());
-		mainPanel.add(qScroller);
-		mainPanel.add(outgoing);
-		mainPanel.add(sendButton);
-		
-		setUpNetworking();
-		Thread readerThread = new Thread(new IncomingReader());
-		readerThread.start();
-
-		frame.getContentPane().add(BorderLayout.CENTER, mainPanel);
-		frame.setSize(400, 500);
-		frame.setVisible(true);
-
-	}
 
 	public void setUpNetworking() {
 
@@ -134,34 +112,5 @@ public class SimpleChatClient extends Application{
 			ex.printStackTrace();
 		}
 	}
-
-//	public class SendButtonListener implements ActionListener {
-//		public void actionPerformed(ActionEvent ev) {
-//			try {
-//				writer.println(outgoing.getText());
-//				writer.flush();
-//			} catch (Exception ex) {
-//				ex.printStackTrace();
-//			}
-//			outgoing.setText("");
-//			outgoing.requestFocus();
-//		}
-//
-//	}
-
-	public class IncomingReader implements Runnable {
-		public void run() {
-			String message;
-			try {
-				while ((message= reader.readLine()) != null) {
-					System.out.println("read " + message);
-					//SimpleChatClient.textArea.appendText(message + "\n");
-				}
-			} catch(Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-	}
-
 
 }
