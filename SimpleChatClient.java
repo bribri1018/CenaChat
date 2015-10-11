@@ -77,22 +77,22 @@ public class SimpleChatClient extends Application{
         grid.add(btn, 1, 30);
         grid.add(textArea, 0, 0, 20, 20);
         
-//        setUpNetworking();
-//		Thread readerThread = new Thread(new Runnable() {
-//			public void run(){
-//				String message;
-//				try {
-//					while ((message= reader.readLine()) != null) {
-//						System.out.println("read " + message);
-//						textArea.appendText(message + "\n");
-//					}
-//				} catch(Exception ex) {
-//					ex.printStackTrace();
-//				}
-//			}
-//		});
-//
-//		readerThread.start();
+       setUpNetworking();
+		Thread readerThread = new Thread(new Runnable() {
+			public void run(){
+				String message;
+				try {
+					while ((message= reader.readLine()) != null) {
+						System.out.println("read " + message);
+						textArea.appendText(message + "\n");
+					}
+				} catch(Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		});
+
+		readerThread.start();
         
         grid.setId("pane");
         Scene scene = new Scene(grid, 600, 500);
